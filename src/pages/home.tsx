@@ -1,11 +1,5 @@
-import axios from "axios";
-
-const baseURL = "https://ahelios.com";
-
-const Axios = axios.create({
-  baseURL,
-  withCredentials: true,
-});
+import Axios from "../api/axios";
+import kakaoLogo from "../assets/kakao_login_medium_narrow.png";
 
 const HomePage = () => {
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,6 +35,28 @@ const HomePage = () => {
       {
         headers: {
           Authorization: `Bearer Basic ${btoa(authorization)}`,
+        },
+      }
+    );
+
+    console.log(response);
+  };
+
+  const onKakaoLogin = async () => {
+    // @ts-ignore
+    const {} = Kakao.Auth.authorize({
+      redirectUri: "http://localhost:5173",
+    });
+
+    const kakaoAccessToken = "";
+
+    const response = await Axios.post(
+      `/auth/kakao/login/js`,
+      {},
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${kakaoAccessToken}`,
         },
       }
     );
@@ -96,6 +112,10 @@ const HomePage = () => {
         />
         <button type="submit">제출</button>
       </form>
+      <br />
+      <button onClick={onKakaoLogin}>
+        <img src={kakaoLogo} />
+      </button>
     </>
   );
 };
