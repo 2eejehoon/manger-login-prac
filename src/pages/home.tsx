@@ -1,22 +1,13 @@
-import Axios from "../api/axios";
+import { kakaoLogin, login, register } from "../api/auth";
 import kakaoLogo from "../assets/kakao_login_medium_narrow.png";
 
 const HomePage = () => {
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const authorization = email + ":" + password;
-    const response = await Axios.post(
-      `/auth/login/email`,
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${btoa(authorization)}`,
-        },
-      }
-    );
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const response = await login({ email, password });
 
     console.log(response);
   };
@@ -24,42 +15,17 @@ const HomePage = () => {
   const onRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("id");
-    const password = formData.get("password");
-    const name = formData.get("name");
-    const nickname = formData.get("nickname");
-    const authorization = email + ":" + password;
-    const response = await Axios.post(
-      `/auth/register/email`,
-      { email, password, name, nickname },
-      {
-        headers: {
-          Authorization: `Bearer Basic ${btoa(authorization)}`,
-        },
-      }
-    );
+    const name = formData.get("name") as string;
+    const nickname = formData.get("nickname") as string;
+    const email = formData.get("id") as string;
+    const password = formData.get("password") as string;
+    const response = await register({ name, nickname, email, password });
 
     console.log(response);
   };
 
   const onKakaoLogin = async () => {
-    // @ts-ignore
-    const {} = Kakao.Auth.authorize({
-      redirectUri: "http://localhost:5173",
-    });
-
-    const kakaoAccessToken = "";
-
-    const response = await Axios.post(
-      `/auth/kakao/login/js`,
-      {},
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${kakaoAccessToken}`,
-        },
-      }
-    );
+    const response = await kakaoLogin();
 
     console.log(response);
   };
@@ -69,47 +35,22 @@ const HomePage = () => {
       <form onSubmit={onLogin}>
         <legend>로그인</legend>
         <label>email</label>
-        <input
-          type="email"
-          name="email"
-          value={"tester1@naver.com"}
-          onChange={() => {}}
-        />
+        <input type="email" name="email" />
         <label>password</label>
-        <input
-          type="password"
-          name="password"
-          value={"tester1"}
-          onChange={() => {}}
-        />
+        <input type="password" name="password" />
         <button type="submit">제출</button>
       </form>
       <br />
       <form onSubmit={onRegister}>
         <legend>회원가입</legend>
         <label>email</label>
-        <input
-          type="email"
-          name="email"
-          value={"tester1@naver.com"}
-          onChange={() => {}}
-        />
+        <input type="email" name="email" />
         <label>password</label>
-        <input
-          type="password"
-          name="password"
-          value={"tester1"}
-          onChange={() => {}}
-        />
+        <input type="password" name="password" />
         <label>name</label>
-        <input type="text" name="name" value={"이제훈"} onChange={() => {}} />
+        <input type="text" name="name" />
         <label>nickname</label>
-        <input
-          type="text"
-          name="name"
-          value={"순돌이주인"}
-          onChange={() => {}}
-        />
+        <input type="text" name="name" />
         <button type="submit">제출</button>
       </form>
       <br />
